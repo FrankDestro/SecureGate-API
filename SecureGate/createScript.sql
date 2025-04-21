@@ -1,31 +1,33 @@
--- Sistemas
+create table oauth_clients (active boolean not null, id uuid not null, system_id uuid, client_id varchar(255) not null unique, client_secret varchar(255), scopes varchar(255), primary key (id));
+create table permissions (id uuid not null, system_id uuid, name varchar(255), primary key (id));
+create table roles (id uuid not null, system_id uuid, name varchar(255), primary key (id));
+create table systems (active boolean not null, created_at timestamp(6), updated_at timestamp(6), id uuid not null, code varchar(255) not null unique, description varchar(255), name varchar(255), primary key (id));
+create table user_permission_perms (permission_id uuid not null, user_permission_id uuid not null);
+create table user_permission_roles (role_id uuid not null, user_permission_id uuid not null);
+create table user_system_permissions (id uuid not null, system_id uuid, user_id uuid, primary key (id));
+create table users (active boolean not null, created_at timestamp(6), updated_at timestamp(6), id uuid not null, name varchar(255), password varchar(255), username varchar(255) unique, primary key (id));
+alter table if exists oauth_clients add constraint FKrs6ehlftve3rbnllf04dhsfn0 foreign key (system_id) references systems;
+alter table if exists permissions add constraint FKbfng0qf6ihequrbx751sj5un3 foreign key (system_id) references systems;
+alter table if exists roles add constraint FKngs0okp59feudj8nn4r8l7pj foreign key (system_id) references systems;
+alter table if exists user_permission_perms add constraint FKkd9qevvb64gse706bfnvthvju foreign key (permission_id) references permissions;
+alter table if exists user_permission_perms add constraint FKif8i3w51pehl076scg3rtv4w5 foreign key (user_permission_id) references user_system_permissions;
+alter table if exists user_permission_roles add constraint FKblpmnydogne2sd0bi20o1iom4 foreign key (role_id) references roles;
+alter table if exists user_permission_roles add constraint FK6gks3rkls81imqumwd31hxqw5 foreign key (user_permission_id) references user_system_permissions;
+alter table if exists user_system_permissions add constraint FKpkueq465ijk38jvb26q2pih7c foreign key (system_id) references systems;
+alter table if exists user_system_permissions add constraint FKfqcogrbcqtjp2jqf0vpx2ht6w foreign key (user_id) references users;
 INSERT INTO systems (id, code, name, description, active, created_At, updated_At) VALUES ('00000000-0000-0000-0000-000000000001', 'sistema-a', 'Sistema A', 'Sistema de gestão A', true, NOW(), NOW());
 INSERT INTO systems (id, code, name, description, active, created_At, updated_At) VALUES ('00000000-0000-0000-0000-000000000002', 'sistema-b', 'Sistema B', 'Sistema de controle B', true, NOW(), NOW());
-
--- Clientes OAuth2
 INSERT INTO oauth_clients (id, client_id, client_secret, scopes, system_id, active) VALUES ('11111111-0000-0000-0000-000000000001', 'client-a', 'secret-a', 'read,write', '00000000-0000-0000-0000-000000000001', true);
 INSERT INTO oauth_clients (id, client_id, client_secret, scopes, system_id, active) VALUES ('11111111-0000-0000-0000-000000000002', 'client-b', 'secret-b', 'read', '00000000-0000-0000-0000-000000000002', true);
-
--- Usuário
 INSERT INTO users (id, name, username, password, active, created_At, updated_At) VALUES ('22222222-0000-0000-0000-000000000001', 'James underneath', 'JUnder', '{noop}123456', true, NOW(), NOW());
-
--- Roles por sistema
 INSERT INTO roles (id, name, system_id) VALUES ('33333333-0000-0000-0000-000000000001', 'ADMIN', '00000000-0000-0000-0000-000000000001');
 INSERT INTO roles (id, name, system_id) VALUES ('33333333-0000-0000-0000-000000000002', 'SUPERVISOR', '00000000-0000-0000-0000-000000000001');
 INSERT INTO roles (id, name, system_id) VALUES ('33333333-0000-0000-0000-000000000003', 'OPERATOR', '00000000-0000-0000-0000-000000000002');
-
--- Permissões por sistema
 INSERT INTO permissions (id, name, system_id) VALUES ('44444444-0000-0000-0000-000000000001', 'VIEW_DASHBOARD', '00000000-0000-0000-0000-000000000001');
 INSERT INTO permissions (id, name, system_id) VALUES ('44444444-0000-0000-0000-000000000002', 'MANAGE_USERS', '00000000-0000-0000-0000-000000000001');
 INSERT INTO permissions (id, name, system_id) VALUES ('44444444-0000-0000-0000-000000000003', 'EXPORT_REPORTS', '00000000-0000-0000-0000-000000000002');
-
--- Vinculo do usuário ao sistema A
 INSERT INTO user_system_permissions (id, user_id, system_id) VALUES ('55555555-0000-0000-0000-000000000001', '22222222-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001');
-
--- Roles vinculadas
 INSERT INTO user_permission_roles (user_permission_id, role_id) VALUES ('55555555-0000-0000-0000-000000000001', '33333333-0000-0000-0000-000000000001');
 INSERT INTO user_permission_roles (user_permission_id, role_id) VALUES ('55555555-0000-0000-0000-000000000001', '33333333-0000-0000-0000-000000000002');
-
--- Permissões vinculadas
 INSERT INTO user_permission_perms (user_permission_id, permission_id) VALUES ('55555555-0000-0000-0000-000000000001', '44444444-0000-0000-0000-000000000001');
 INSERT INTO user_permission_perms (user_permission_id, permission_id) VALUES ('55555555-0000-0000-0000-000000000001', '44444444-0000-0000-0000-000000000002');

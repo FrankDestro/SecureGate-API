@@ -16,6 +16,7 @@ import java.util.UUID;
 @Setter
 public class UserEntityDTO {
     private UUID id;
+    private String name;
     private String username;
     private boolean active;
     private Map<String, SystemDTO> systems;

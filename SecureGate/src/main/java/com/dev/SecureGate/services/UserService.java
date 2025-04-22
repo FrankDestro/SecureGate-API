@@ -4,6 +4,8 @@ import com.dev.SecureGate.Models.dto.UserEntityDTO;
 import com.dev.SecureGate.Models.entities.UserEntity;
 import com.dev.SecureGate.mappers.UserMapper;
 import com.dev.SecureGate.repositories.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +21,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<UserEntityDTO> getAllUsers() {
-        List<UserEntity> users = userRepository.findAll();
-        return users.stream().map(user -> userMapper.toDTO(user)).toList();
+    public Page<UserEntityDTO> getAllUsers(Pageable pageable) {
+        Page<UserEntity> users = userRepository.findAll(pageable);
+        return users.map(userMapper::toDTO);
     }
 }

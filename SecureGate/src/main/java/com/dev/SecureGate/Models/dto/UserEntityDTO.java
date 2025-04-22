@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -20,6 +21,8 @@ public class UserEntityDTO {
     private String username;
     private boolean active;
     private Map<String, SystemDTO> systems;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @NoArgsConstructor
     @AllArgsConstructor

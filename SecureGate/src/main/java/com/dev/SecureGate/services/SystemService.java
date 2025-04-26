@@ -16,8 +16,8 @@ public class SystemService {
     private final SystemRepository systemRepository;
 
     @Transactional(readOnly = true)
-    public Page<SystemOAuthClientDTO> getSystemsWithClients(Pageable pageable)throws JsonProcessingException  {
-        Page<SystemOAuthClientDTO> list = systemRepository.findAllClientsWithSystems(pageable);
+    public Page<SystemOAuthClientDTO> getSystemsWithClients(Pageable pageable, String nome)throws JsonProcessingException  {
+        Page<SystemOAuthClientDTO> list = systemRepository.findAllClientsWithSystems(pageable, nome);
         return list;
     }
 }
